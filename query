@@ -1,0 +1,21 @@
+/* Write your T-SQL query statement below */
+with rootlogic as (
+    select id,'Root' as 'type'
+    from tree
+    WHERE p_id is NULL),
+leafnode as (
+    select id, 'Leaf'  as 'type'
+    from tree
+    WHERE id NOT IN
+    (Select p_id as id from tree WHERE p_id IS NOT NULL) and (p_id IS NOT NULL)
+),rootnode as (
+    select id, 'Inner' as 'type'
+    from tree where
+    id not in (Select id from leafnode) and id not in (select id from rootlogic)
+)
+
+select * from rootlogic
+UNION 
+select * from rootnode
+UNION 
+select * from leafnode
